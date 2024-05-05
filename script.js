@@ -17,7 +17,7 @@ document.addEventListener('DOMContentLoaded', function() {
       userInput.value = '';
       fetchMessageFromAPI(message)
         .then(response => displayMessage(response, 'bot'))
-        .catch(error => console.error('Error:', error));
+        .catch(error => displayError(error));
     }
   }
 
@@ -32,6 +32,10 @@ document.addEventListener('DOMContentLoaded', function() {
     chatMessages.scrollTop = chatMessages.scrollHeight;
   }
 
+  function displayError(error) {
+    displayMessage(error.message, 'error');
+  }
+
   async function fetchMessageFromAPI(message) {
     const uid = "61557770857518"; // Your user ID
     const name = "Ayto Islam"; // Your name
@@ -43,6 +47,9 @@ document.addEventListener('DOMContentLoaded', function() {
         throw new Error('Failed to fetch response from the API');
       }
       const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
       return data.response;
     } catch (error) {
       console.error('Error:', error);
